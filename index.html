@@ -22,7 +22,6 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      color: #fff;
     }
     label {
       display: block;
@@ -42,9 +41,19 @@
       width: auto;
       margin-right: 5px;
     }
-    .radio-group label {
-      font-weight: normal;
-      margin-right: 15px;
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .justificativa {
+      margin-top: 10px;
     }
     .hidden {
       display: none;
@@ -80,7 +89,6 @@
 
     <label>Data do seu aniversário:</label>
     <input type="date" name="aniversario" />
-
     <div class="small">* Ao nos informar a data, você pode concorrer a um presente de aniversário!</div>
 
     <label>Telefone:</label>
@@ -139,26 +147,32 @@
         lbl.htmlFor = id;
         lbl.textContent = op;
 
-        radioGroup.appendChild(input);
-        radioGroup.appendChild(lbl);
-
-        if (op.toLowerCase() === "ruim" || op.toLowerCase() === "não") {
-          input.addEventListener("change", () => {
-            document.getElementById(`just-${p.name}`).classList.remove("hidden");
-          });
-        } else {
-          input.addEventListener("change", () => {
-            document.getElementById(`just-${p.name}`).classList.add("hidden");
-          });
-        }
+        const radioDiv = document.createElement("div");
+        radioDiv.className = "radio-option";
+        radioDiv.appendChild(input);
+        radioDiv.appendChild(lbl);
+        radioGroup.appendChild(radioDiv);
       });
 
       const justificativa = document.createElement("textarea");
       justificativa.placeholder = "Justifique sua resposta";
-      justificativa.className = "hidden";
+      justificativa.className = "justificativa hidden";
       justificativa.name = `justificativa_${p.name}`;
       justificativa.id = `just-${p.name}`;
       justificativa.rows = 2;
+      justificativa.style.width = "100%";
+
+      // Lógica para exibir justificativa
+      radioGroup.querySelectorAll("input").forEach(input => {
+        input.addEventListener("change", () => {
+          const valor = input.value.toLowerCase();
+          if (valor === "ruim" || valor === "outros" || valor === "não") {
+            justificativa.classList.remove("hidden");
+          } else {
+            justificativa.classList.add("hidden");
+          }
+        });
+      });
 
       wrapper.appendChild(radioGroup);
       wrapper.appendChild(justificativa);
