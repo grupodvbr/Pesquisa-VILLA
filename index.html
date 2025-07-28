@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pesquisa de Satisfação</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+    form { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+    .radio-group { margin-top: 5px; }
+    .radio-group label { font-weight: normal; }
+    .hidden { display: none; }
+    button { background: black; color: white; padding: 10px; border: none; margin-top: 20px; width: 100%; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <form id="pesquisaForm">
+    <h2>Pesquisa de Satisfação</h2>
+    <label>Nome e sobrenome:</label>
+    <input type="text" name="nome" required />
+
+    <label>Qual a data do seu aniversário?</label>
+    <div style="display: flex; gap: 10px;">
+      <input type="number" name="dia" placeholder="Dia" min="1" max="31" />
+      <input type="text" name="mes" placeholder="Mês" />
+      <input type="number" name="ano" placeholder="Ano" min="1900" max="2100" />
+    </div>
+
+    <label>Telefone:</label>
+    <input type="tel" name="telefone" required />
+
+    <label>Em qual cidade mora?</label>
+    <select name="cidade" required>
+      <option value="">Selecione</option>
+      <option value="Barreiras - BA">Barreiras - BA</option>
+      <option value="Luis Eduardo Magalhães - BA">Luis Eduardo Magalhães - BA</option>
+      <option value="Outra">Outra</option>
+    </select>
+
+    <div id="perguntas"></div>
+
+    <label>Deixe uma sugestão:</label>
+    <textarea name="sugestao"></textarea>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const perguntas = [
+      { texto: 'O que achou do nosso ambiente?', name: 'ambiente' },
+      { texto: 'O que achou da iluminação?', name: 'iluminacao' },
+      { texto: 'Como estava a comida?', name: 'comida' },
+      { texto: 'Como estava a música?', name: 'musica' },
+      { texto: 'Qual seu estilo musical?', name: 'estilo', opcoes: ['Sertanejo', 'Músicas Internacionais', 'Pop Rock', 'Jazz', 'Outros'] },
+      { texto: 'Como avalia o atendimento recebido?', name: 'atendimento' },
+      { texto: 'O que achou da climatização?', name: 'climatizacao' },
+      { texto: 'O que achou das bebidas?', name: 'bebidas' }
+    ];
+
+    const container = document.getElementById("perguntas");
+
+    perguntas.forEach(p => {
+      const wrapper = document.createElement("div");
+      const label = document.createElement("label");
+      label.textContent = p.texto;
+      wrapper.appendChild(label);
+
+      const radioGroup = document.createElement("div");
+      radioGroup.className = "radio-group";
+
+      const opcoes = p.opcoes || ["Ótimo", "Bom", "Ruim"];
+      opcoes.forEach(op => {
+        const id = `${p.name}-${op}`;
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = p.name;
+        input.value = op;
+        input.id = id;
+        input.required = true;
+
+        const lbl = document.createElement("label");
+        lbl.htmlFor = id;
+        lbl.textContent = op;
+
+        radioGroup.appendChild(input);
+        radioGroup.appendChild(lbl);
+        radioGroup.appendChild(document.createElement("br"));
+
+        if (op.toLowerCase() === "ruim" || op.toLowerCase() === "não") {
+          input.addEventListener("change", () => {
+            document.getElementById(`just-${p.name}`).classList.remove("hidden");
+          });
+        } else {
+          input.addEventListener("change", () => {
+            document.getElementById(`just-${p.name}`).classList.add("hidden");
+          });
+        }
+      });
+
+      const justificativa = document.createElement("textarea");
+      justificativa.placeholder = "Justifique sua resposta";
+      justificativa.className = "hidden";
+      justificativa.name = `justificativa_${p.name}`;
+      justificativa.id = `just-${p.name}`;
+
+      wrapper.appendChild(radioGroup);
+      wrapper.appendChild(justificativa);
+      container.appendChild(wrapper);
+    });
+
+    document.getElementById("pesquisaForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const dados = Object.fromEntries(new FormData(this));
+      fetch("https://script.google.com/macros/s/AKfycbyO3ZE0OwBo14DEHDW0D0FiznqBNi1w_Lj63wjit9H30KIomKdIIQkShclw3Rips_1G/exec", {
+        method: "POST",
+        body: JSON.stringify(dados),
+      })
+      .then(res => res.text())
+      .then(msg => alert("Resposta enviada com sucesso!"))
+      .catch(err => alert("Erro ao enviar resposta."));
+      this.reset();
+    });
+  </script>
+</body>
+</html>
