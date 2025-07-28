@@ -204,9 +204,12 @@
       e.preventDefault();
       const dados = Object.fromEntries(new FormData(this));
       fetch("https://script.google.com/macros/s/AKfycbyO3ZE0OwBo14DEHDW0D0FiznqBNi1w_Lj63wjit9H30KIomKdIIQkShclw3Rips_1G/exec", {
-        method: "POST",
-        body: JSON.stringify(dados),
-      })
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(dados),
+})
       .then(res => res.text())
       .then(msg => {
         alert("Resposta enviada com sucesso!");
