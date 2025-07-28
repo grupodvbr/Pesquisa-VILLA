@@ -138,7 +138,7 @@
       { texto: 'O que achou da iluminação?', name: 'iluminacao' },
       { texto: 'Como estava a comida?', name: 'comida' },
       { texto: 'Como estava a música?', name: 'musica' },
-      { texto: 'Qual seu estilo musical?', name: 'estilo', opcoes: ['Sertanejo', 'Músicas Internacionais', 'Pop Rock', 'Jazz', 'Outros'] },
+      { texto: 'Qual seu estilo musical?', name: 'estilo', opcoesTexto: ['Sertanejo', 'Músicas Internacionais', 'Pop Rock', 'Jazz', 'Outros'] },
       { texto: 'Como avalia o atendimento recebido?', name: 'atendimento' },
       { texto: 'O que achou da climatização?', name: 'climatizacao' },
       { texto: 'O que achou das bebidas?', name: 'bebidas' }
@@ -155,19 +155,29 @@
       const radioGroup = document.createElement("div");
       radioGroup.className = "radio-group";
 
-      const opcoes = p.opcoes || ["Ótimo", "Bom", "Ruim"];
+      let opcoes = [];
+
+      if (p.opcoesTexto) {
+        opcoes = p.opcoesTexto.map(txt => ({ label: txt, valor: txt }));
+      } else {
+        opcoes = [
+          { label: "Ótimo", valor: "1" },
+          { label: "Bom", valor: "2" },
+          { label: "Ruim", valor: "3" }
+        ];
+      }
+
       opcoes.forEach(op => {
-        const id = `${p.name}-${op}`;
         const input = document.createElement("input");
         input.type = "radio";
         input.name = p.name;
-        input.value = op;
-        input.id = id;
+        input.value = op.valor;
+        input.id = `${p.name}-${op.valor}`;
         input.required = true;
 
         const lbl = document.createElement("label");
-        lbl.htmlFor = id;
-        lbl.textContent = op;
+        lbl.htmlFor = input.id;
+        lbl.textContent = op.label;
 
         const radioDiv = document.createElement("div");
         radioDiv.className = "radio-option";
@@ -180,14 +190,13 @@
       justificativa.placeholder = "Justifique sua resposta";
       justificativa.className = "justificativa hidden";
       justificativa.name = `justificativa_${p.name}`;
-      justificativa.id = `just-${p.name}`;
       justificativa.rows = 2;
       justificativa.style.width = "100%";
 
       radioGroup.querySelectorAll("input").forEach(input => {
         input.addEventListener("change", () => {
           const valor = input.value.toLowerCase();
-          if (valor === "ruim" || valor === "outros" || valor === "não") {
+          if (valor === "3" || valor === "outros" || valor === "não") {
             justificativa.classList.remove("hidden");
           } else {
             justificativa.classList.add("hidden");
@@ -208,11 +217,9 @@
         dados[key] = value;
       });
 
-      fetch("https://script.google.com/macros/s/AKfycbwMVjrP8EGHrC10NMtG18OsK2W_WrYbBTCH4z5zU2pF0NsbXkewCYHjwjAk_pfMBuFi/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbwcSN9ZnkKsTiMt-q8sJdk05k4sbqVGbnFaxOQ4P2iW6kXGpN_K_H9-HJsitJ61ANXL/exec", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dados),
       })
       .then(res => res.text())
