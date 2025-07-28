@@ -200,32 +200,31 @@
       container.appendChild(wrapper);
     });
 
-   document.getElementById("pesquisaForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  const dados = {};
-  formData.forEach((value, key) => {
-    dados[key] = value;
-  });
+    document.getElementById("pesquisaForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const dados = {};
+      formData.forEach((value, key) => {
+        dados[key] = value;
+      });
 
-  fetch("https://script.google.com/macros/s/AKfycbwcSN9ZnkKsTiMt-q8sJdk05k4sbqVGbnFaxOQ4P2iW6kXGpN_K_H9-HJsitJ61ANXL/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(dados),
-  })
-  .then(res => res.text())
-  .then(msg => {
-    alert("Resposta enviada com sucesso!");
-    document.getElementById("pesquisaForm").reset();
-  })
-  .catch(err => {
-    console.error("Erro:", err);
-    alert("Erro ao enviar resposta.");
-  });
-});
-
+      fetch("https://script.google.com/macros/s/AKfycbxdY3Rb7o_ZngAtFJJqWRpB-IP_Su2v1Is1GZlUNohjvBlNXg4oN4Ixw9jQQeHHt0fJ/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados),
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert("Resposta enviada com sucesso!");
+        document.getElementById("pesquisaForm").reset();
+      })
+      .catch(err => {
+        console.error("Erro:", err);
+        alert("Erro ao enviar resposta.");
+      });
+    });
   </script>
 </body>
 </html>
