@@ -1,237 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pesquisa de Satisfação</title>
+  <meta charset="UTF-8">
+  <title>Site Incorporado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #000;
-      color: #fff;
-    }
-    form {
-      background: #1a1a1a;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 700px;
-      margin: auto;
-      box-shadow: 0 0 10px #333;
-    }
-    .topo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    .logo {
-      position: absolute;
-      left: 0;
-      height: 40px;
-      width: auto;
-    }
-    .titulo-central {
-      flex: 1;
-      text-align: center;
-    }
-    h2 {
+    html, body {
       margin: 0;
-      font-size: 1.6em;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #555;
-      background: #2c2c2c;
-      color: #fff;
-    }
-    input[type="radio"] {
-      width: auto;
-      margin-right: 5px;
-    }
-    .radio-group {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .radio-option {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .justificativa {
-      margin-top: 10px;
-    }
-    .hidden {
-      display: none;
-    }
-    button {
-      background: #00cc66;
-      color: white;
-      padding: 12px;
+    iframe {
       border: none;
-      margin-top: 25px;
       width: 100%;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #00a14b;
-    }
-    .small {
-      font-size: 0.9em;
-      color: #ccc;
-      margin-top: 5px;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <form id="pesquisaForm">
-    <div class="topo">
-      <img src="https://static.wixstatic.com/media/d830b0_1cb207fe39384759bd2ca8e143d170e1~mv2.jpg" alt="Logo" class="logo" />
-      <div class="titulo-central">
-        <h2>Pesquisa de Satisfação</h2>
-      </div>
-    </div>
-
-    <label>Nome e sobrenome:</label>
-    <input type="text" name="nome" required />
-
-    <label>Data do seu aniversário:</label>
-    <input type="date" name="aniversario" />
-    <div class="small">* Ao nos informar a data, você pode concorrer a um presente de aniversário!</div>
-
-    <label>Telefone:</label>
-    <input type="tel" name="telefone" required />
-
-    <label>Em qual cidade mora?</label>
-    <select name="cidade" required>
-      <option value="">Selecione</option>
-      <option value="Barreiras - BA">Barreiras - BA</option>
-      <option value="Luis Eduardo Magalhães - BA">Luis Eduardo Magalhães - BA</option>
-      <option value="Outra">Outra</option>
-    </select>
-
-    <div id="perguntas"></div>
-
-    <label>Deixe uma sugestão:</label>
-    <textarea name="sugestao" rows="3"></textarea>
-
-    <button type="submit">Enviar</button>
-  </form>
-
-  <script>
-    const perguntas = [
-      { texto: 'O que achou do nosso ambiente?', name: 'ambiente' },
-      { texto: 'O que achou da iluminação?', name: 'iluminacao' },
-      { texto: 'Como estava a comida?', name: 'comida' },
-      { texto: 'Como estava a música?', name: 'musica' },
-      { texto: 'Qual seu estilo musical?', name: 'estilo', opcoesTexto: ['Sertanejo', 'Músicas Internacionais', 'Pop Rock', 'Jazz', 'Outros'] },
-      { texto: 'Como avalia o atendimento recebido?', name: 'atendimento' },
-      { texto: 'O que achou da climatização?', name: 'climatizacao' },
-      { texto: 'O que achou das bebidas?', name: 'bebidas' }
-    ];
-
-    const container = document.getElementById("perguntas");
-
-    perguntas.forEach(p => {
-      const wrapper = document.createElement("div");
-      const label = document.createElement("label");
-      label.innerHTML = `<strong>${p.texto}</strong>`;
-      wrapper.appendChild(label);
-
-      const radioGroup = document.createElement("div");
-      radioGroup.className = "radio-group";
-
-      let opcoes = [];
-
-      if (p.opcoesTexto) {
-        opcoes = p.opcoesTexto.map(txt => ({ label: txt, valor: txt }));
-      } else {
-        opcoes = [
-          { label: "Ótimo", valor: "1" },
-          { label: "Bom", valor: "2" },
-          { label: "Ruim", valor: "3" }
-        ];
-      }
-
-      opcoes.forEach(op => {
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = p.name;
-        input.value = op.valor;
-        input.id = `${p.name}-${op.valor}`;
-        input.required = true;
-
-        const lbl = document.createElement("label");
-        lbl.htmlFor = input.id;
-        lbl.textContent = op.label;
-
-        const radioDiv = document.createElement("div");
-        radioDiv.className = "radio-option";
-        radioDiv.appendChild(input);
-        radioDiv.appendChild(lbl);
-        radioGroup.appendChild(radioDiv);
-      });
-
-      const justificativa = document.createElement("textarea");
-      justificativa.placeholder = "Justifique sua resposta";
-      justificativa.className = "justificativa hidden";
-      justificativa.name = `justificativa_${p.name}`;
-      justificativa.rows = 2;
-      justificativa.style.width = "100%";
-
-      radioGroup.querySelectorAll("input").forEach(input => {
-        input.addEventListener("change", () => {
-          const valor = input.value.toLowerCase();
-          if (valor === "3" || valor === "outros" || valor === "não") {
-            justificativa.classList.remove("hidden");
-          } else {
-            justificativa.classList.add("hidden");
-          }
-        });
-      });
-
-      wrapper.appendChild(radioGroup);
-      wrapper.appendChild(justificativa);
-      container.appendChild(wrapper);
-    });
-
-    document.getElementById("pesquisaForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const dados = {};
-      formData.forEach((value, key) => {
-        dados[key] = value;
-      });
-
-      fetch("https://script.google.com/macros/s/AKfycbwEfEGlZw-66GsC6UFIIBiFuyU1VfWQWB9zuf-SdTdFX4z04rxnQAtD6cpqZ1hKV25F/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados),
-      })
-      .then(res => res.text())
-      .then(msg => {
-        alert("Resposta enviada com sucesso!");
-        document.getElementById("pesquisaForm").reset();
-      })
-      .catch(err => {
-        console.error("Erro:", err);
-        alert("Erro ao enviar resposta.");
-      });
-    });
-  </script>
+  <iframe src="https://grupodvbr.wixstudio.com/my-site/blank-23?rc" allowfullscreen></iframe>
 </body>
 </html>
